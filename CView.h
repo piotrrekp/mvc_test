@@ -33,7 +33,8 @@ protected:
 	Gtk::Button mButton;
 	Glib::RefPtr<Gtk::ListStore> mTreeModel;
 	std::vector<Gtk::TreeViewColumn> *mColumnList;
-	Gtk::CellRendererText *cell;
+	Gtk::CellRendererSpin *cell;
+	ColumnStruct *mColumnStruct;
 };
 
 #endif /* CVIEW_H_ */

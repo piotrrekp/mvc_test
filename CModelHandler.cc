@@ -14,14 +14,14 @@ CModelHandler::CModelHandler(CModel *aModel):
 	mCS = mModel->mColumnStruct;
 	Gtk::TreeModel::iterator iter1 = mRefTreeModel->append();
 	Gtk::TreeModel::Row row1 = *iter1;
-	row1[mCS->mOperators.second] = "1";
+	row1[mCS->mOperators.second] = "MyName";
 
 	Gtk::TreeModel::iterator iter = mRefTreeModel->append();
 	Gtk::TreeModel::Row row = *iter;
 //	row[mModel->m_col_name] = "12";
 //	row[mModel->mColumnList->at(0).second] = 0.0;
 
-	row[mCS->mOperators.second] = "kuuurczatko";
+	row[mCS->mOperators.second] = "TOTAL";
 }
 void CModelHandler::SetData(std::string data){
 	std::cout << data << std::endl;

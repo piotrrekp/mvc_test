@@ -29,12 +29,12 @@ CModel::CModel(): data("") {
 	mColumnStruct->mAsortItem = new std::vector<DoubleColumn>;
 	mColumnList = new std::vector<DoubleColumn>;
 
-	Gtk::TreeModelColumn<double> dc;
-	Gtk::TreeModelColumn<double> dc1;
-	add(dc);
-	add(dc1);
-	mColumnList->push_back(make_pair("a", dc));
-	mColumnList->push_back( make_pair("b", dc1));
+	Gtk::TreeModelColumn<double> vTreeModelColumn;
+	Gtk::TreeModelColumn<double> vTreeModelColumn1;
+	add(vTreeModelColumn);
+	add(vTreeModelColumn1);
+	mColumnList->push_back(make_pair("a", vTreeModelColumn));
+	mColumnList->push_back( make_pair("b", vTreeModelColumn1));
 	mColumnStruct->mAsortItem = mColumnList;
 
 

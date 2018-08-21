@@ -20,11 +20,11 @@ CView::CView():
 			&CView::ManageButtonClicked));
 	show_all_children();
 	mColumnList = new std::vector<Gtk::TreeViewColumn>;
+	cell = Gtk::manage(new Gtk::CellRendererSpin());
+	mColumnStruct = new ColumnStruct();
 }
 
-
-void CView::setRightModel(Glib::RefPtr<Gtk::ListStore> treeModel) {
-
+void CView::setRightModel(Glib::RefPtr<Gtk::ListStore> treeModel) 	{
 	 mTreeView.set_model(treeModel);
 }
 
@@ -35,57 +35,59 @@ void CView::setColumnModel(
 
 
 void CView::setColumnModel(ColumnStruct *aColumnStruct){
+	mColumnStruct = aColumnStruct;
 	mTreeView.append_column(aColumnStruct->mOperators.first,
 			aColumnStruct->mOperators.second);
 
-	cell = manage(new Gtk::CellRendererSpin());
 	std::vector<DoubleColumn> *vAsortItem = aColumnStruct->mAsortItem;
+Gtk::Adjustment vSpinAdjustment(1,0,100,1);
 	for(std::vector<DoubleColumn>::iterator it = vAsortItem->begin();
 			it != vAsortItem->end(); it++){
 
-//		Gtk::TreeViewColumn *vNewColumn;
-//
-//		vNewColumn->pack_start(*cell, false);
-//		vNewColumn->set_cell_data_func(*cell,
-//				sigc::mem_fun(*this, &CView::on_cell_data_func));
-//		vNewColumn->set_renderer(*cell, it->second);
-//		mTreeView.append_column(it->first, *cell);
+		int cols_count = mTreeView.append_column(it->first, *cell);
+		Gtk::TreeViewColumn *pColumn = mTreeView.get_column(cols_count-1);
+		cell = new Gtk::CellRendererSpin;
+		cell->property_editable() = true;
 
-			Gtk::TreeViewColumn view_column = Gtk::manage(new Gtk::TreeViewColumn(_("Name")));
-			Gtk::CellRendererText cell = Gtk::manage(new Gtk::CellRendererText());
+		cell->property_adjustment() = &vSpinAdjustment;
+		pColumn->pack_start(*cell, false);
+		pColumn->add_attribute(cell->property_text(),it->second);
+		pColumn->set_fixed_width(50);
+		pColumn->set_cell_data_func(*cell,
+				sigc::mem_fun(*this, &CView::on_cell_data_func));
 
-			view_column->pack_start(*cell, false);
-			view_column->set_cell_data_func(*cell, sigc::mem_fun(*this, &MyTreeView::on_cell_data_name));
-			append_column(view_column);
-		}
+
+	}
 }
 
 void CView::on_cell_data_func(Gtk::CellRenderer* renderer,
 		const Gtk::TreeModel::iterator& iter) {
-	std::cout << "tutaj" << std::endl;
-
-//	Gtk::TreeModel::Row row = *iter;
-//	int id = row[mColumnStruct->mOperators.second];
-//	Glib::ustring name = row[m_columns.m_col_name];
-//	if (id ==  "TOTAL"){
-//
-//	}
-//	Gtk::CellRendererText* text_renderer =
-//			dynamic_cast<Gtk::CellRendererText*>(renderer);
-//	if (text_renderer)
-//		text_renderer.property_markup() = name;
+	Gtk::TreeModel::Row row = *iter;
+	Glib::ustring name = row[mColumnStruct->mOperators.second];
+	Gtk::CellRendererSpin* vSpinRenderer =
+				dynamic_cast<Gtk::CellRendererSpin*>(renderer);
+//tutaj załatwiamy blokowanie wiersza TOTAL !!
+	if (name ==  "TOTAL") {
+		vSpinRenderer->property_editable() = false;
+	}
+	else {
+		vSpinRenderer->property_editable() = true;
+	}
 
 }
 
-void CView::update(){}
+void CView::update(){
+
+}
 
 void CView::ManageButtonClicked(){
 	std::string a("kuuuurczak");
 	m_signal_something.emit(a);
-
 }
+
 sigc::signal<void, std::string> CView::signal_something(){
 	return m_signal_something;
 }
+
 CView::~CView() {}
 
